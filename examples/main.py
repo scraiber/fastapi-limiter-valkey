@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
 
-import redis.asyncio as redis
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, WebSocket
+import valkey.asyncio as valkey
+from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
@@ -10,8 +10,8 @@ from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    redis_connection = redis.from_url("redis://localhost:6379", encoding="utf8")
-    await FastAPILimiter.init(redis_connection)
+    valkey_connection = valkey.from_url("valkey://localhost:6379", encoding="utf8")
+    await FastAPILimiter.init(valkey_connection)
     yield
     await FastAPILimiter.close()
 
@@ -44,13 +44,18 @@ async def multiple():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     ratelimit = WebSocketRateLimiter(times=1, seconds=5)
-    while True:
-        try:
-            data = await websocket.receive_text()
-            await ratelimit(websocket, context_key=data)  # NB: context_key is optional
-            await websocket.send_text("Hello, world")
-        except HTTPException:
-            await websocket.send_text("Hello again")
+    try:
+        while True:
+            try:
+                data = await websocket.receive_text()
+                await ratelimit(websocket, context_key=data)  # NB: context_key is optional
+                await websocket.send_text("Hello, world")
+            except HTTPException:
+                await websocket.send_text("Hello again")
+    except WebSocketDisconnect:
+        print("Client disconnected")
+    finally:
+        await websocket.close()
 
 
 if __name__ == "__main__":

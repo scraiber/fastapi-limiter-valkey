@@ -1,21 +1,21 @@
 [tool.poetry]
-authors = ["long2ice <long2ice@gmail.com>"]
+authors = ["Scraiber <contact@scraiber.com>"]
 description = "A request rate limiter for fastapi"
-documentation = "https://github.com/long2ice/fastapi-limiter"
-homepage = "https://github.com/long2ice/fastapi-limiter"
+documentation = "https://github.com/scraiber/fastapi-limiter-valkey"
+homepage = "https://github.com/scraiber/fastapi-limiter-valkey"
 include = ["CHANGELOG.md", "LICENSE", "README.md"]
 keywords = ["fastapi", "limiter"]
 license = "Apache2.0"
-name = "fastapi-limiter"
+name = "fastapi-limiter-valkey"
 packages = [
     { include = "fastapi_limiter" },
 ]
 readme = "README.md"
-repository = "https://github.com/long2ice/fastapi-limiter.git"
-version = "0.1.6"
+repository = "https://github.com/scraiber/fastapi-limiter-valkey.git"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
-redis = ">=4.2.0rc1"
+valkey = ">=6.0.2"
 fastapi = "*"
 python = "^3.9"
 
@@ -41,7 +41,7 @@ profile = "black"
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.ruff]
 line-length = 100

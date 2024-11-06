@@ -3,7 +3,7 @@ black_opts = -l 100 -t py38
 py_warn = PYTHONDEVMODE=1
 
 help:
-	@echo "fastapi-limiter development makefile"
+	@echo "fastapi-limiter-valkey development makefile"
 	@echo
 	@echo  "usage: make <target>"
 	@echo  "Targets:"
@@ -26,7 +26,7 @@ style: deps
 
 check: deps
 	black --check $(black_opts) $(checkfiles) || (echo "Please run 'make style' to auto-fix style issues" && false)
-	ruff $(checkfiles)
+	ruff check $(checkfiles)
 	bandit -x tests -r $(checkfiles)
 
 test: deps

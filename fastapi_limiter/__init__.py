@@ -45,7 +45,7 @@ async def ws_default_callback(ws: WebSocket, pexpire: int):
 
 
 class FastAPILimiter:
-    redis = None
+    valkey = None
     prefix: Optional[str] = None
     lua_sha: Optional[str] = None
     identifier: Optional[Callable] = None
@@ -55,35 +55,35 @@ class FastAPILimiter:
 local limit = tonumber(ARGV[1])
 local expire_time = ARGV[2]
 
-local current = tonumber(redis.call('get', key) or "0")
+local current = tonumber(server.call('get', key) or "0")
 if current > 0 then
  if current + 1 > limit then
- return redis.call("PTTL",key)
+ return server.call("PTTL",key)
  else
-        redis.call("INCR", key)
+        server.call("INCR", key)
  return 0
  end
 else
-    redis.call("SET", key, 1,"px",expire_time)
+    server.call("SET", key, 1,"px",expire_time)
  return 0
 end"""
 
     @classmethod
     async def init(
         cls,
-        redis,
-        prefix: str = "fastapi-limiter",
+        valkey,
+        prefix: str = "fastapi-limiter-valkey",
         identifier: Callable = default_identifier,
         http_callback: Callable = http_default_callback,
         ws_callback: Callable = ws_default_callback,
     ) -> None:
-        cls.redis = redis
+        cls.valkey = valkey
         cls.prefix = prefix
         cls.identifier = identifier
         cls.http_callback = http_callback
         cls.ws_callback = ws_callback
-        cls.lua_sha = await redis.script_load(cls.lua_script)
+        cls.lua_sha = await valkey.script_load(cls.lua_script)
 
     @classmethod
     async def close(cls) -> None:
-        await cls.redis.close()
+        await cls.valkey.aclose()

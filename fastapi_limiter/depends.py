@@ -1,6 +1,6 @@
 from typing import Annotated, Callable, Optional
 
-import redis as pyredis
+import valkey as pyvalkey
 from pydantic import Field
 from starlette.requests import Request
 from starlette.responses import Response
@@ -26,14 +26,14 @@ class RateLimiter:
         self.callback = callback
 
     async def _check(self, key):
-        redis = FastAPILimiter.redis
-        pexpire = await redis.evalsha(
+        valkey = FastAPILimiter.valkey
+        pexpire = await valkey.evalsha(
             FastAPILimiter.lua_sha, 1, key, str(self.times), str(self.milliseconds)
         )
         return pexpire
 
     async def __call__(self, request: Request, response: Response):
-        if not FastAPILimiter.redis:
+        if not FastAPILimiter.valkey:
             raise Exception("You must call FastAPILimiter.init in startup event of fastapi!")
         route_index = 0
         dep_index = 0
@@ -52,8 +52,8 @@ class RateLimiter:
         key = f"{FastAPILimiter.prefix}:{rate_key}:{route_index}:{dep_index}"
         try:
             pexpire = await self._check(key)
-        except pyredis.exceptions.NoScriptError:
-            FastAPILimiter.lua_sha = await FastAPILimiter.redis.script_load(
+        except pyvalkey.exceptions.NoScriptError:
+            FastAPILimiter.lua_sha = await FastAPILimiter.valkey.script_load(
                 FastAPILimiter.lua_script
             )
             pexpire = await self._check(key)
@@ -63,7 +63,7 @@ class RateLimiter:
 
 class WebSocketRateLimiter(RateLimiter):
     async def __call__(self, ws: WebSocket, context_key=""):
-        if not FastAPILimiter.redis:
+        if not FastAPILimiter.valkey:
             raise Exception("You must call FastAPILimiter.init in startup event of fastapi!")
         identifier = self.identifier or FastAPILimiter.identifier
         rate_key = await identifier(ws)

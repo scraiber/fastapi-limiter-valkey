@@ -64,4 +64,3 @@ def test_limiter_websockets():
             ws.send_text("Hi 2")
             data = ws.receive_text()
             assert data == "Hello, world"
-            ws.close()
