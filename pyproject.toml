@@ -12,7 +12,7 @@ packages = [
 ]
 readme = "README.md"
 repository = "https://github.com/scraiber/fastapi-limiter-valkey.git"
-version = "0.1.0"
+version = "0.1.1"
 
 [tool.poetry.dependencies]
 valkey = ">=6.0.2"
