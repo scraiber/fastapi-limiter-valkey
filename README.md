@@ -29,7 +29,7 @@ FastAPI-Limiter-Valkey is simple to use, which just provide a dependency `RateLi
 request per `5` seconds in route `/`.
 
 ```py
-import valkey.asyncio as valkey
+import valkey.asyncio as vk
 import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
@@ -39,7 +39,7 @@ from fastapi_limiter.depends import RateLimiter
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    valkey_connection = valkey.from_url("valkey://localhost:6379", encoding="utf8")
+    valkey_connection = vk.from_url("valkey://localhost:6379", encoding="utf8")
     await FastAPILimiter.init(valkey_connection)
     yield
     await FastAPILimiter.close()

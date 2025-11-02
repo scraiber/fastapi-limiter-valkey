@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       valkey:
-        image: valkey/valkey:latest
+        image: valkey/valkey:8.1.2
         options: >-
           --health-cmd "valkey-cli ping"
           --health-interval 10s
@@ -24,7 +24,7 @@ jobs:
 
       - name: Install and configure Poetry
         run: |
-          pip install -U pip poetry
+          pip install -U pip poetry>=2.2.1
           poetry config virtualenvs.create false
 
       - name: CI

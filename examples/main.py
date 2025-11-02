@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
-import valkey.asyncio as valkey
+import valkey.asyncio as vk
 from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 
 from fastapi_limiter import FastAPILimiter
@@ -10,7 +10,7 @@ from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    valkey_connection = valkey.from_url("valkey://localhost:6379", encoding="utf8")
+    valkey_connection = vk.from_url("valkey://localhost:6379", encoding="utf8")
     await FastAPILimiter.init(valkey_connection)
     yield
     await FastAPILimiter.close()

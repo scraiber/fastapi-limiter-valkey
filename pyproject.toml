@@ -12,29 +12,29 @@ packages = [
 ]
 readme = "README.md"
 repository = "https://github.com/scraiber/fastapi-limiter-valkey.git"
-version = "0.1.1"
+version = "0.1.2"
 
 [tool.poetry.dependencies]
-valkey = ">=6.0.2"
-fastapi = "*"
-python = "^3.9"
+valkey = ">=6.1.1"
+fastapi = ">=0.120.4"
+python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
-uvicorn = "*"
-bandit = "*"
-black = "*"
-ruff = "*"
-isort = "*"
-pytest = "*"
-pytest-asyncio = "*"
-pytest-mock = "*"
-pytest-xdist = "*"
-requests = "*"
-httpx = "*"
+uvicorn = ">=0.38.0"
+bandit = ">=1.8.6"
+black = ">=25.9.0"
+ruff = ">=0.14.3"
+isort = ">=7.0.0"
+pytest = ">=8.4.2"
+pytest-asyncio = ">=1.2.0"
+pytest-mock = ">=3.15.1"
+pytest-xdist = ">=3.8.0"
+requests = ">=2.32.5"
+httpx = ">=0.28.1"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.2.1"]
 
 [tool.isort]
 profile = "black"
